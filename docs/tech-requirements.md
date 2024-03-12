@@ -27,6 +27,7 @@ interface Request {
   name: string; // min: 1; max: 160 символов
   folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию
   description?: string; // min: 1 если не undefined; max: 4096 символов
+  deadlines: string;
 } |
 | Response | 
 interface Response {
@@ -45,7 +46,6 @@ interface Response {
 interface Request {
   name: string; // min: 1; max: 16 символов
   userId?: string; //min: 5; max: 16 символов
-  ParentfolderId?: string; // id родительской папки
   iconLink?: string; 
 } |
 | Response | 
@@ -59,20 +59,35 @@ interface Response {
 
 | Получить текущие задачи |  |
 | --- | --- |
-| Endpoint | GET /api/todo/getTask |
+| Endpoint | GET /api/todo/getTasks |
 | Description | Метод для обновления текущих задач |
 | Request |
   interface Request {
   userId?: string; //min: 5; max: 16 символов
-  lastUpdateTime?: string; // Для предотвращения частых запросов
 } |
 | Response | 
 interface Response {
-  folderName?: string;
-    taskName?: string;
-      taskDesription?: string;
-  taskName?: string;
-    taskDesription?: string;
+  taskName: string;
+  lastestChange: string;
+  taskDesription: string;
+}; |
+| Errors | 
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+• ERR_TOO_OFTEN - переданы невалидные входные параметры |
+
+| Получить текущие папки |  |
+| --- | --- |
+| Endpoint | GET /api/todo/getFolders |
+| Description | Метод для обновления текущих задач |
+| Request |
+  interface Request {
+  userId?: string; //min: 5; max: 16 символов
+} |
+| Response | 
+interface Response {
+  folderName: string;
+  lastestChange: string;
+  folderIconLink: string;
 }; |
 | Errors | 
 • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
@@ -84,13 +99,8 @@ interface Response {
 | Description | Метод для авторизаци |
 | Request | 
 interface Request {
-  alreadyReg?: bool;
-    userEmail?: string;
-    userPassword?: string;
-  notRegYet?: bool;
-    userEmail?: string;
-    userPassword?: string;
-    forgetPassword?: bool;
+  userEmail: string;
+  userPassword: string;
 } |
 | Response | 
 interface Response {
@@ -101,13 +111,29 @@ interface Response {
 • ERR_WRONG_PASS - передан невеверный пароль
 • ERR_WRONG_MAIL - передан невеверный логин |
 
-| Создание задачи |  |
+| Удаление задачи |  |
 | --- | --- |
 | Endpoint | DELETE /api/todo/deleteTask |
 | Description | Метод для создания задачи |
 | Request | interface Request {
   name: string; // min: 1; max: 160 символов
   folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию
+} |
+| Response | 
+interface Response {
+  // ничего не возвращается после создания задачи
+}; |
+| Errors | 
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+• ERR_VALIDATION_FAILED - переданы невалидные входные параметры
+• ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
+
+| Удаление задачи |  |
+| --- | --- |
+| Endpoint | DELETE /api/todo/deleteFolder |
+| Description | Метод для создания задачи |
+| Request | interface Request {
+  name: string; // min: 1; max: 160 символов
 } |
 | Response | 
 interface Response {
