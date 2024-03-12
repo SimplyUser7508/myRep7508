@@ -22,15 +22,18 @@
 | --- | --- |
 | Endpoint | POST /api/todo/createTask |
 | Description | Метод для создания задачи |
-| Request | interface Request {
+| Request | 
+interface Request {
   name: string; // min: 1; max: 160 символов
   folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию
   description?: string; // min: 1 если не undefined; max: 4096 символов
 } |
-| Response | interface Response {
+| Response | 
+interface Response {
   // ничего не возвращается после создания задачи
 }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+| Errors |
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
 • ERR_VALIDATION_FAILED - переданы невалидные входные параметры
 • ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
 
@@ -38,16 +41,19 @@
 | --- | --- |
 | Endpoint | POST /api/todo/createTaskFolder |
 | Description | Метод для создания папки с задачами |
-| Request | interface Request {
+| Request | 
+interface Request {
   name: string; // min: 1; max: 16 символов
   userId?: string; //min: 5; max: 16 символов
   ParentfolderId?: string; // id родительской папки
   iconLink?: string; 
 } |
-| Response | interface Response {
+| Response | 
+interface Response {
   // ничего не возвращается после создания папки
 }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+| Errors | 
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
 • ERR_VALIDATION_FAILED - переданы невалидные входные параметры
 • ERR_FOLDER_NOT_FOUND - не найдена указанная родительская папка |
 
@@ -55,38 +61,43 @@
 | --- | --- |
 | Endpoint | GET /api/todo/getTask |
 | Description | Метод для обновления текущих задач |
-| Request | interface Request {
+| Request |
+  interface Request {
   userId?: string; //min: 5; max: 16 символов
   lastUpdateTime?: string; // Для предотвращения частых запросов
 } |
-| Response | interface Response {
+| Response | 
+interface Response {
   folderName?: string;
-	taskName?: string;
-		taskDesription?: string;
+    taskName?: string;
+      taskDesription?: string;
   taskName?: string;
-	taskDesription?: string;
+    taskDesription?: string;
 }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+| Errors | 
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
 • ERR_TOO_OFTEN - переданы невалидные входные параметры |
 
 | Регистрация и вход |  |
 | --- | --- |
 | Endpoint | GET /api/todo/authUser |
 | Description | Метод для авторизаци |
-| Request | interface Request {
+| Request | 
+interface Request {
   alreadyReg?: bool;
-  	userEmail?: string;
-  	userPassword?: string;
+    userEmail?: string;
+    userPassword?: string;
   notRegYet?: bool;
-	userEmail?: string;
-  	userPassword?: string;
-	forgetPassword?: bool;
+    userEmail?: string;
+    userPassword?: string;
+    forgetPassword?: bool;
 } |
-| Response | interface Response {
-  
+| Response | 
+interface Response {
   // ничего не возвращается после авторизации
 }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+| Errors | 
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
 • ERR_WRONG_PASS - передан невеверный пароль
 • ERR_WRONG_MAIL - передан невеверный логин |
 
@@ -98,10 +109,12 @@
   name: string; // min: 1; max: 160 символов
   folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию
 } |
-| Response | interface Response {
+| Response | 
+interface Response {
   // ничего не возвращается после создания задачи
 }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
+| Errors | 
+• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
 • ERR_VALIDATION_FAILED - переданы невалидные входные параметры
 • ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
 > 
