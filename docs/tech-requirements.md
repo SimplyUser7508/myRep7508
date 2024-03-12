@@ -127,16 +127,16 @@ interface Response {
 |• ERR_VALIDATION_FAILED - переданы невалидные входные параметры
 |• ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
 
-| Удаление задачи |  |
+| Удаление папки |  |
 | --- | --- |
 | Endpoint | DELETE /api/todo/deleteFolder |
-| Description | Метод для создания задачи |
+| Description | Метод для создания папки |
 | Request | interface Request {
 |  name: string; // min: 1; max: 160 символов
 |} |
 | Response | 
 |interface Response {
-|  // ничего не возвращается после создания задачи
+|  // ничего не возвращается после создания папки
 |}; |
 | Errors | 
 |• ERR_USER_NOT_AUTH - пользователь не авторизован в приложении
