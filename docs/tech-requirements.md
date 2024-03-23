@@ -18,70 +18,69 @@
 - *тут нужно будет описать API-интерфейс создаваемый в рамках backend сервиса.
 К примеру:*
 
-| Создание задачи |                                                                                                                                                                                                                                                                                         |
-| --- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Endpoint | POST /api/todo/createTask                                                                                                                                                                                                                                                               |
-| Description | Метод для создания задачи                                                                                                                                                                                                                                                               |
-| Request | interface Request {<br/> taskId: string; // min: 1; max: 160 символов <br/> folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию <br/> description?: string; // min: 1 если не undefined; max: 4096 символов <br/> deadlines: string;<br/> } |
-| Response | interface Response {<br/> // ничего не возвращается после создания задачи <br/> };                                                                                                                                                                                                      |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка                                                                                          |
+| Создание задачи |                                                                                                                                                                                                                                                                                           |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint        | POST /api/todo/createTask                                                                                                                                                                                                                                                                 |
+| Description     | Метод для создания задачи                                                                                                                                                                                                                                                                 |
+| Request         | interface Request {<br/> taskId: string; // min: 1; max: 160 символов <br/> folderId: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию <br/> description?: string; // min: 1 если не undefined; max: 4096 символов <br/> deadline: string;<br/> } |
+| Response        | interface Response {<br/> // ничего не возвращается после создания задачи <br/> };                                                                                                                                                                                                        |
+| Errors          | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка                                                                                            |
 
-| Создание папки задач |                                                                                                                                                                                                                                                                                              |
-| --- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Endpoint | POST /api/todo/createTask                                                                                                                                                                                                                                                                    |
-| Description | Метод для создания задачи                                                                                                                                                                                                                                                                    |
-| Request | interface Request {<br/> taskId: string; // min: 1; max: 160 символов <br/> folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию <br/> description?: string; // min: 1 если не undefined; <br/> max: 4096 символов deadlines: string;<br/> }; |
-| Response | interface Response {<br/> // ничего не возвращается после создания задачи <br/> };                                                                                                                                                                                                           |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка                                                                                               |                                                                                                                                                                                               | 
+| Создание папки задач |                                                                                                                                                                                                             |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint             | POST /api/todo/createTaskFolder                                                                                                                                                                             |
+| Description          | Метод для создания папки с задачами                                                                                                                                                                         |
+| Request              | interface Request {<br/> name: string; // min: 1; max: 16 символов <br/> userId?: string; //min: 5; max: 16 символов <br/> iconLink?: string; <br/> }                                                       |
+| Response             | interface Response {<br/> // ничего не возвращается после создания папки <br/> };                                                                                                                           |
+| Errors               | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная родительская папка |
 
-| Создание папки задач |  |
-| --- | --- |
-| Endpoint | POST /api/todo/createTaskFolder |
-| Description | Метод для создания папки с задачами |
-| Request | interface Request {<br/> name: string; // min: 1; max: 16 символов <br/> userId?: string; //min: 5; max: 16 символов <br/> iconLink?: string; <br/> } |
-| Response | interface Response {<br/> // ничего не возвращается после создания папки <br/> }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная родительская папка |
+| Получить текущие задачи |                                                                                                                              |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint                | GET /api/todo/getTasks                                                                                                       |
+| Description             | Метод для обновления текущих задач                                                                                           |
+| Request                 | interface Request {<br/> userId?: string; //min: 5; max: 16 символов <br/> }                                                 |
+| Response                | interface Response {<br/> taskName: string; <br/> lastChange: string; <br/> taskDescription: string; <br/> };                |
+| Errors                  | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_TOO_OFTEN - переданы невалидные входные параметры |
 
-| Получить текущие задачи |  |
-| --- | --- |
-| Endpoint | GET /api/todo/getTasks |
-| Description | Метод для обновления текущих задач |
-| Request | interface Request {<br/> userId?: string; //min: 5; max: 16 символов <br/> } |
-| Response | interface Response {<br/> taskName: string; <br/> lastestChange: string; <br/> taskDesription: string; <br/> }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_TOO_OFTEN - переданы невалидные входные параметры |
+| Получить текущие папки |                                                                                                                              |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint               | GET /api/todo/getFolders                                                                                                     |
+| Description            | Метод для обновления текущих задач                                                                                           |
+| Request                | interface Request {<br/> userId?: string; //min: 5; max: 16 символов <br/> }                                                 |
+| Response               | interface Response {<br/> folderId: string;  <br/> lastChange: string; <br/> folderIconLink: string; <br/> };                |
+| Errors                 | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_TOO_OFTEN - переданы невалидные входные параметры |
 
-| Получить текущие папки |  |
-| --- | --- |
-| Endpoint | GET /api/todo/getFolders |
-| Description | Метод для обновления текущих задач |
-| Request | interface Request {<br/> userId?: string; //min: 5; max: 16 символов <br/> } |
-| Response | interface Response {<br/> folderName: string; <br/> lastestChange: string; <br/> folderIconLink: string; <br/> }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_TOO_OFTEN - переданы невалидные входные параметры |
+| Регистрация и вход |                                                                                                                                                                 |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint           | GET /api/todo/authUser                                                                                                                                          |
+| Description        | Метод для авторизации                                                                                                                                           |
+| Request            | interface Request {<br/> userEmail: string; <br/> userPassword: string; <br/> }                                                                                 |
+| Response           | interface Response {<br/> // ничего не возвращается после авторизации <br/> };                                                                                  |
+| Errors             | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_WRONG_PASS - передан неверный пароль <br/> • ERR_WRONG_MAIL - передан неверный логин |
 
-| Регистрация и вход |  |
-| --- | --- |
-| Endpoint | GET /api/todo/authUser |
-| Description | Метод для авторизации |
-| Request | interface Request {<br/> userEmail: string; <br/> userPassword: string; <br/> } |
-| Response | interface Response {<br/> // ничего не возвращается после авторизации <br/> }; |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_WRONG_PASS - передан неверный пароль <br/> • ERR_WRONG_MAIL - передан неверный логин |
-
-| Удаление задачи |                                                                                                                                                                                                |
-| --- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Endpoint | DELETE /api/todo/deleteTask                                                                                                                                                                    |
-| Description | Метод для удаления задачи                                                                                                                                                                      |
-| Request | interface Request {<br/> taskId: string; // min: 1; max: 160 символов <br/> folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию <br/> }        |
-| Response | interface Response {<br/> // ничего не возвращается после удаления задачи <br/> };                                                                                                             |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
+| Удаление задачи   |                                                                                                                                                                                                |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint          | DELETE /api/todo/deleteTask                                                                                                                                                                    |
+| Description       | Метод для удаления задачи                                                                                                                                                                      |
+| Request           | interface Request {<br/> taskId: string; // min: 1; max: 160 символов <br/> folderId?: string; // id папки. В случае, если не будет выставлено, то попадет в папку по умолчанию <br/> }        |
+| Response          | interface Response {<br/> // ничего не возвращается после удаления задачи <br/> };                                                                                                             |
+| Errors            | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
 
 | Удаление папки |                                                                                                                                                                                                |
-| --- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Endpoint | DELETE /api/todo/deleteFolder                                                                                                                                                                  |
-| Description | Метод для удаления папки                                                                                                                                                                       |
-| Request | interface Request {<br/> folderId: string; // min: 1; max: 160 символов <br/> }                                                                                                                |
-| Response | interface Response {<br/> // ничего не возвращается после удаления папки <br/> };                                                                                                              |
-| Errors | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
+|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint       | DELETE /api/todo/deleteFolder                                                                                                                                                                  |
+| Description    | Метод для удаления папки                                                                                                                                                                       |
+| Request        | interface Request {<br/> folderId: string; // min: 1; max: 160 символов <br/> }                                                                                                                |
+| Response       | interface Response {<br/> // ничего не возвращается после удаления папки <br/> };                                                                                                              |
+| Errors         | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/> • ERR_FOLDER_NOT_FOUND - не найдена указанная папка |
 
+| Сортировка элементов |                                                                                                                                                                                        |
+|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint             | POST /api/todo/sortByDefault                                                                                                                                                           |
+| Description          | Метод для сортировки                                                                                                                                                                   |
+| Request              | interface Request {<br/> sortMethod: string; // Only sortByDeadline, sortLexicographically, sortByDefault(lastChange) <br/> deadline: string; <br/> lastChange: string; <br/> }; <br/> |
+| Response             | interface Response {<br/> folderId: string; <br/> taskId: string <br/> };                                                                                                              |
+| Errors               | • ERR_USER_NOT_AUTH - пользователь не авторизован в приложении <br/> • ERR_VALIDATION_FAILED - переданы невалидные входные параметры <br/>                                             |
 
 ## Детальное описание технического решения
 
