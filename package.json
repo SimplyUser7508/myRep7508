@@ -1,0 +1,20 @@
+{
+  "name": "node_project",
+  "version": "1.0.0",
+  "description": "my first project",
+  "main": "index.js",
+  "scripts": {
+    "lab1": "C:/Users/user/NodeJS/node-v20.11.1-win-x64/node ./test.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimplyUser7508/myRep7508.git"
+  },
+  "author": "Nikolai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SimplyUser7508/myRep7508/issues"
+  },
+  "homepage": "https://github.com/SimplyUser7508/myRep7508#readme"
+}
