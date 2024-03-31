@@ -1,0 +1,164 @@
+//app.js
+const express = require('express');
+const mysql = require('mysql');
+const config = require('./config');
+
+const app = express();
+const port = config.port;
+
+app.use(express.json());
+
+// Конфигурация подключения к базе данных
+const dbConnection = mysql.createConnection(config.db.mysql);
+
+// Подключение к базе данных
+dbConnection.connect((err) => {
+    if (err) {
+        console.error('Ошибка подключения к базе данных: ' + err.stack);
+        return;
+    }
+    console.log('Подключение к базе данных успешно установлено');
+});
+
+// Получение всех задач
+app.get('/getTasks', (req, res) => {
+    const sortBy = req.query.sortBy || 'default';
+    let sqlQuery = '';
+
+    switch (sortBy) {
+        case 'deadline':
+            sqlQuery =
+                `SELECT task_name,
+                    description,
+                    deadline 
+                 FROM Tasks
+                 ORDER BY deadline ASC`;
+            break;
+        case 'lexicographic':
+            sqlQuery =
+                `SELECT task_name,
+                    description,
+                    deadline 
+                 FROM Tasks
+                 ORDER BY task_name ASC`;
+            break;
+        case 'default':
+        default:
+            sqlQuery =
+                `SELECT task_name,
+                    description,
+                    deadline
+                 FROM Tasks
+                 ORDER BY last_change DESC`;
+            break;
+    }
+
+    dbConnection.query(sqlQuery, (err, results) => {
+        if (err) {
+            console.error('Ошибка выполнения запроса: ' + err.stack);
+            res.status(500).send('Ошибка сервера');
+            return;
+        }
+        console.log('Результаты запроса:', results);
+        res.json(results);
+    });
+});
+
+
+// Добавление задачи
+app.post('/addTask', (req, res) => { // id, task_name, description, deadline, last_change
+    const taskName = req.body.taskName;
+    const description = req.body.description;
+    const deadline = req.body.deadline;
+
+    if (!taskName) {
+        res.status(400).send('Не указано имя задачи');
+        return;
+    }
+
+    const sqlQuery = `INSERT INTO Tasks VALUES ('${taskName}', '${description}', CAST(${deadline} AS DATETIME), NOW())`;
+    dbConnection.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error('Ошибка выполнения запроса: ' + err.stack);
+            res.status(500).send('Ошибка сервера');
+            return;
+        }
+        console.log('Запись успешно добавлена в таблицу Tasks');
+        res.send('Запись успешно добавлена в таблицу Tasks');
+    });
+});
+
+// Удаление задачи
+app.delete('/deleteTask/:taskId', (req, res) => {
+    const taskId = req.params.taskId;
+
+    const sqlQuery = `DELETE FROM Tasks WHERE id = ${taskId}`;
+    dbConnection.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error('Ошибка выполнения запроса: ' + err.stack);
+            res.status(500).send('Ошибка сервера');
+            return;
+        }
+        console.log('Задача успешно удалена из таблицы tasks');
+        res.send('Задача успешно удалена из таблицы tasks');
+    });
+});
+
+// Метод для редактирования задачи
+app.put('/editTask/:taskId', async (req, res) => {
+    const taskId = req.params.taskId;
+    const { newName } = req.body;
+
+    if (!newName) {
+        return res.status(400).json({ error: 'Не указано новое имя задачи' });
+    }
+
+    const sqlQuery = `UPDATE Tasks SET task_name = '${newName}', last_change = NOW() WHERE id = ${taskId}`;
+    dbConnection.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error('Ошибка выполнения запроса: ' + err.stack);
+            res.status(500).send('Ошибка: задача не отредактирована');
+            return;
+        }
+        console.log('Задача успешно отредактирована');
+        res.status(200).json({ message: 'Задача успешно отредактирована' });
+    });
+});
+
+app.post('/tablesCreate', async (req, res) => {
+    const sqlQuery = `CREATE TABLE Folders (
+                            folder_id INT AUTO_INCREMENT PRIMARY KEY,
+                            folder_name VARCHAR(50) NOT NULL
+                          );
+
+                          CREATE TABLE Tasks (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            task_name VARCHAR(50) NOT NULL,
+                            description VARCHAR(255),
+                            folder INT NOT NULL,
+                            deadline DATETIME,
+                            last_change DATETIME,
+                            FOREIGN KEY (folder) REFERENCES Folders (folder_id) ON DELETE CASCADE
+                          );
+
+                          CREATE TABLE Users (
+                              id INT AUTO_INCREMENT PRIMARY KEY,
+                              email VARCHAR(255) UNIQUE NOT NULL,
+                              password VARCHAR(255) NOT NULL
+                          );`
+
+    dbConnection.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error('Ошибка выполнения запроса: ' + err.stack);
+            res.status(500).send('Ошибка создания таблиц');
+            return;
+        }
+        console.log('Таблицы успешно созданы');
+        res.status(200).json({ message: 'Таблицы успешно созданы' });
+    });
+})
+
+// Запуск сервера
+app.listen(port, () => {
+    console.log(`Сервер запущен на порту ${port}`);
+});

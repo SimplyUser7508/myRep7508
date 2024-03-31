@@ -4,6 +4,7 @@
   "description": "my first project",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "lab1": "C:/Users/user/NodeJS/node-v20.11.1-win-x64/node ./test.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +17,13 @@
   "bugs": {
     "url": "https://github.com/SimplyUser7508/myRep7508/issues"
   },
-  "homepage": "https://github.com/SimplyUser7508/myRep7508#readme"
+  "homepage": "https://github.com/SimplyUser7508/myRep7508#readme",
+  "dependencies": {
+    "express": "^4.19.1",
+    "mysql": "^2.18.1"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": []
 }
