@@ -4,7 +4,7 @@ const fs = require('fs');
 const config = {
     db: {
         mysql : {
-                host: 'db-mysql-fra1-51752-do-user-9208055-0.c.db.ondigitalocean.com',
+            host: 'db-mysql-fra1-51752-do-user-9208055-0.c.db.ondigitalocean.com',
             user: 'user3', // замените на своего пользователя
             database: 'db3', // можете заменить 'appdb' на свое название базы данных
             password: 'AVNS_ThdZaAG2_shkrS8PnP6', // замените это на пароль от своего пользователя
@@ -14,7 +14,8 @@ const config = {
             }
         },
     },
-    port: 3000 // порт на котором будет запущен сервер приложения
+    port: 3000,
+    jwtSecret: 'mybebrakey'
 };
 
 module.exports =  config;
