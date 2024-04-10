@@ -104,7 +104,7 @@ app.post('/addTask', (req, res) => {
         console.log('Запись успешно добавлена в таблицу Tasks');
         res.send('Запись успешно добавлена в таблицу Tasks');
     });
-});
+}); 
 
 // Удаление задачи
 app.delete('/deleteTask/:taskId', (req, res) => {

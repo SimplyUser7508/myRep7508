@@ -47,7 +47,9 @@
         input[type="text"],
         input[type="password"],
         input[type="date"],
-        input[type="time"] {
+        input[type="time"],
+        #loginForm [type = submit],
+        #registerForm [type = submit] {
             font-family: 'Comfortaa', sans-serif;
             background-color: #484848;
             color: #d7d7d7;
@@ -57,14 +59,8 @@
             border-radius: 5px;
         }
 
-        #buttonsBlock {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-        }
-
-        button[type="submit"],
-        button[type="button"] {
+        #buttonsBlock button[type="submit"],
+        #buttonsBlock button[type="button"] {
             align-items: left;
             position: fixed;
             left: 620px;
