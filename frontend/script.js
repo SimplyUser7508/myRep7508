@@ -1,0 +1,281 @@
+﻿document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    const taskForm = document.getElementById('taskForm');
+    let userId = 0;
+
+    if (token) { 
+        try {
+            const response = await fetch('http://localhost:3000/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Передача токена в заголовке запроса
+                }
+            });
+                
+            if (!response.ok) {
+                throw new Error('Неверный токен'); // Если токен неверный, выбрасываем ошибку
+            }
+            
+            const data = await response.json(); // Извлекаем JSON из ответа
+            userId = data.userId; // Получаем email из объекта данных
+            
+            // Пользователь аутентифицирован, показываем форму для добавления задач
+            taskForm.style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            loadTasks(); 
+        // Загружаем задачи с сервера для данного пользователя
+        } catch (error) {
+            console.error('Ошибка при проверке аутентификации:', error);
+            alert('Для просмотра задач необходимо войти в систему');
+            // Перенаправляем пользователя на страницу входа или отображаем сообщение об ошибке
+        }
+    } else {
+        // Пользователь не аутентифицирован, скрываем форму для добавления задач
+        taskForm.style.display = 'none';
+        // Показываем форму входа и/или регистрации
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('registerForm').style.display = 'block';
+    }
+
+    // Обработчик события отправки формы
+    document.getElementById('taskForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Предотвращаем перезагрузку страницы
+        const taskInput = document.getElementById('taskInput');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const dateInput = document.getElementById('dateInput').value;
+        const timeInput = document.getElementById('timeInput').value; // Получаем поля описания задачи
+
+        const taskName = taskInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const localDeadline = new Date(dateInput + 'T' + timeInput);
+        localDeadline.setTime(localDeadline.getTime() + 6 * 60 * 60 * 1000);
+        const deadline = localDeadline.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+
+        if (taskName !== '') {
+            addTask(taskName, description, deadline, userId);
+            taskInput.value = '';
+            descriptionInput.value = ''; 
+        }
+    });
+
+    const dropdownItems = document.querySelectorAll('.dropdown-content a');
+
+
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(event) {
+            event.preventDefault();
+            const selectedSort = item.textContent;
+            switch(selectedSort) {
+                case 'lexicographic':
+                    loadTasks('lexicographic');
+                    break;
+                case 'deadline':
+                    loadTasks('deadline');
+                    break;
+                default:
+                    loadTasks('default');
+                    break;
+            }
+        });
+    });
+    // Обработка формы входа
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        try {
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            alert('Вы успешно вошли');
+            window.location.reload();
+        } catch (error) {
+            console.error('Ошибка при входе:', error);
+            alert('Ошибка при входе');
+        }
+    });
+
+    // Обработка формы регистрации
+    document.getElementById('registerForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const yourEmail = document.getElementById('yourEmail').value;
+        const newPassword = document.getElementById('newPassword').value;
+        try {
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: yourEmail, password: newPassword })
+            });
+            alert('Пользователь успешно зарегистрирован');
+        } catch (error) {
+            console.error('Ошибка при регистрации:', error);
+            alert('Ошибка при регистрации');
+        }
+    });
+
+
+    // Функция для загрузки задач с сервера
+    function loadTasks(sortType = 'default') {
+        fetch(`http://localhost:3000/getTasks/${userId}?sortBy=${sortType}`)
+            .then(response => response.json())
+            .then(tasks => {
+                const taskList = document.getElementById('taskList');
+                taskList.innerHTML = '';
+                tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    const taskInfo = document.createElement('div');
+    
+                    const taskNameElement = document.createElement('p');
+                    taskNameElement.textContent = `Task Name: ${task.task_name}`;
+                    taskInfo.appendChild(taskNameElement);
+    
+                    const descriptionElement = document.createElement('p');
+                    descriptionElement.textContent = `Description: ${task.description}`;
+                    taskInfo.appendChild(descriptionElement);
+    
+                    const deadlineElement = document.createElement('p');
+                    deadlineElement.textContent = `Deadline: ${formatDeadline(task.deadline)}`;
+                    taskInfo.appendChild(deadlineElement);
+    
+                    const trashIcon = document.createElement('span');
+                    trashIcon.classList.add('task-delete');
+                    trashIcon.textContent = '🗑';
+                    trashIcon.addEventListener('click', () => {
+                        deleteTask(task.id);
+                    });
+                    taskInfo.appendChild(trashIcon);
+
+                    const editIcon = document.createElement('span');
+                    editIcon.classList.add('task-edit');
+                    editIcon.textContent = '✎';
+                    editIcon.addEventListener('click', () => {
+                        handleEditTask(task, task.id);
+                    });
+                    taskInfo.appendChild(editIcon);
+    
+                    li.appendChild(taskInfo);
+                    taskList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error fetching tasks:', error));
+    }
+
+    // Функция для удаления задачи
+    function deleteTask(taskId) {
+        fetch(`http://localhost:3000/deleteTask/${taskId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка сети');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Результат запроса
+        })
+        .then(() => {
+            loadTasks(); // После удаления задачи перезагружаем список задач
+        })
+        .catch(error => console.error('Ошибка при удалении задачи:', error));
+    }
+    
+    // Функция для редактирования задачи
+    function editTask(taskId, newName, newDescription, newDeadline) {
+        fetch(`http://localhost:3000/editTask/${taskId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                newName: newName,
+                newDescription: newDescription,
+                newDeadline: newDeadline
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка сети');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Результат запроса
+            loadTasks(); // После редактирования задачи перезагружаем список задач
+        })
+        .catch(error => console.error('Ошибка при редактировании задачи:', error));
+    }
+
+    // Функция для обработки редактирования задачи
+    function handleEditTask(task, taskId) {
+        const taskInput = document.getElementById('taskInput');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const deadlineInput = document.getElementById('deadlineInput');
+
+        // Заполнение полей формы данными текущей задачи
+        taskInput.value = task.task_name;
+        descriptionInput.value = task.description;
+
+        // Обработчик события отправки формы с обновленными данными
+        document.getElementById('editButton').addEventListener('click', () => {
+            const newTaskName = taskInput.value.trim();
+            const newDescription = descriptionInput.value.trim();
+            const dateInput = document.getElementById('dateInput').value;
+            const timeInput = document.getElementById('timeInput').value;
+            const localDeadline = new Date(dateInput + 'T' + timeInput);
+            localDeadline.setTime(localDeadline.getTime() + 6 * 60 * 60 * 1000);
+            const newDeadline = localDeadline.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+            if (newTaskName !== '') {
+                editTask(taskId, newTaskName, newDescription, newDeadline);
+                // Очистка полей формы после редактирования
+                taskInput.value = '';
+                descriptionInput.value = ''; 
+            }
+            
+        });
+    }
+
+    // Функция для добавления задачи на сервер
+    function addTask(taskName, description, deadline) {
+    //'2024-04-07 12:00:00'; // Пример временного значения для демонстрации
+    fetch('http://localhost:3000/addTask', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          taskName: taskName,
+          description: description,
+          deadline: deadline,
+          userId: userId 
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Ошибка сети');
+        }
+        return response.text();
+      })
+      .then(data => {
+        console.log(data); // Результат запроса
+      })
+      .then(() => {
+        loadTasks(); // После добавления задачи перезагружаем список задач
+      })
+      .catch(error => console.error('Ошибка при добавлении задачи:', error));
+  }
+
+    function formatDeadline(deadline) {
+        const date = new Date(deadline); // Преобразование строки в объект Date
+        const formattedDate = date.toISOString().replace('T', ' ').slice(0, 16); // Форматирование даты
+        return formattedDate;
+    }
+});

@@ -1,0 +1,132 @@
+﻿<!-- Форма входа -->
+<form id="loginForm">
+    <input type="text" id="email" placeholder="Ваша почта" required>
+    <input type="password" id="password" placeholder="Пароль" required>
+    <button type="submit">Войти</button>
+</form>
+
+<!-- Форма регистрации -->
+<form id="registerForm">
+    <input type="text" id="yourEmail" placeholder="Ваша почта" required>
+    <input type="password" id="newPassword" placeholder="Новый пароль" required>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap">
+    <title>To-Do List</title>
+    <style>
+        /* Стили для простоты, можно изменить по вашему желанию */
+        body {
+            font-family: 'Comfortaa', sans-serif;
+            background-color: #252526; /* Цвет темного фона */
+            color: #e0e0e0;
+        }
+        #taskList {
+            margin-bottom: 20px;
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .task-delete {
+            cursor: pointer;
+        }
+        .task-edit {
+            cursor: pointer;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="time"] {
+            font-family: 'Comfortaa', sans-serif;
+            background-color: #484848;
+            color: #d7d7d7;
+            border: none; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 5px;
+        }
+
+        button[type="submit"],
+        button[type="button"] {
+            background-color: #484848; /* Цвет фона */
+            color: #e0e0e0; /* Цвет текста */
+            border: none; /* Убираем границу */
+            padding: 10px; /* Отступы вокруг текста */
+            margin: 5px 0; /* Внешние отступы */
+            border-radius: 5px; /* Закругляем углы */
+            cursor: pointer; /* Указатель при наведении */
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            background-color: #484848; /* Цвет фона */
+            border-radius: 5px;
+        }
+        .dropdown button {
+            font-family: 'Comfortaa', sans-serif;
+            background-color: #484848;
+            color: #e0e0e0;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #676767;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: #e0e0e0;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #484848;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<h1>To-Do List</h1>
+<form id="taskForm">
+    <input type="text" id="taskInput" placeholder="Add a new task">
+    <input type="text" id="descriptionInput" placeholder="Add description"> 
+    <input type="date" id="dateInput" required>
+    <input type="time" id="timeInput" required>
+    <button type="submit">➕</button>
+    <button type="button" id="editButton">✎</button>
+</form>
+
+<div class="dropdown">
+    <button class="dropbtn">Sort by</button>
+    <div class="dropdown-content">
+      <a href="#">default</a>
+      <a href="#">lexicographic</a>
+      <a href="#">deadline</a>
+    </div>
+</div>
+
+<ul id="taskList">
+    <!-- Сюда будут добавляться задачи -->
+</ul>
+
+<script src="script.js"></script> <!-- Подключаем JavaScript файл -->
+</body>
+</html>
