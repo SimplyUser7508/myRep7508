@@ -22,6 +22,9 @@ import { MailService } from "./mail/mail.service";
     },
     MailService],
     imports: [
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, '..', 'client'),
+      }),
       JwtModule.register({
         secret: process.env.PRIVATE_KEY || 'SECRET',
         signOptions: {
