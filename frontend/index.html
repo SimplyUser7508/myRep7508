@@ -1,4 +1,4 @@
-﻿<!-- Форма входа -->
+<!-- Форма входа -->
 <form id="loginForm">
     <input type="text" id="email" placeholder="Ваша почта" required>
     <input type="password" id="password" placeholder="Пароль" required>
@@ -20,14 +20,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap">
     <title>To-Do List</title>
     <style>
-        /* Стили для простоты, можно изменить по вашему желанию */
         body {
             font-family: 'Comfortaa', sans-serif;
             background-color: #252526; /* Цвет темного фона */
             color: #e0e0e0;
         }
+
         #taskList {
+            max-width: 650px;
             margin-bottom: 20px;
+            overflow-wrap: break-word;
         }
         .task {
             display: flex;
@@ -45,7 +47,9 @@
         input[type="text"],
         input[type="password"],
         input[type="date"],
-        input[type="time"] {
+        input[type="time"],
+        #loginForm [type = submit],
+        #registerForm [type = submit] {
             font-family: 'Comfortaa', sans-serif;
             background-color: #484848;
             color: #d7d7d7;
@@ -55,15 +59,21 @@
             border-radius: 5px;
         }
 
-        button[type="submit"],
-        button[type="button"] {
-            background-color: #484848; /* Цвет фона */
-            color: #e0e0e0; /* Цвет текста */
-            border: none; /* Убираем границу */
-            padding: 10px; /* Отступы вокруг текста */
-            margin: 5px 0; /* Внешние отступы */
-            border-radius: 5px; /* Закругляем углы */
-            cursor: pointer; /* Указатель при наведении */
+        #buttonsBlock button[type="submit"],
+        #buttonsBlock button[type="button"] {
+            align-items: left;
+            position: fixed;
+            left: 620px;
+            top: 38px;
+            min-width: 100px;
+            min-height: 100px;
+            background-color: #484848;
+            color: #e0e0e0; 
+            border: none; 
+            padding: 10px; 
+            margin: 5px 0;
+            border-radius: 50px;
+            cursor: pointer;
         }
 
         .dropdown {
@@ -105,13 +115,17 @@
 </head>
 <body>
 <h1>To-Do List</h1>
+
+<div id="buttonsBlock">
+    <button type="submit" id="submitButton">➕</button>
+    <button type="button" id="editButton">✎</button>
+</div>
+
 <form id="taskForm">
     <input type="text" id="taskInput" placeholder="Add a new task">
     <input type="text" id="descriptionInput" placeholder="Add description"> 
     <input type="date" id="dateInput" required>
     <input type="time" id="timeInput" required>
-    <button type="submit">➕</button>
-    <button type="button" id="editButton">✎</button>
 </form>
 
 <div class="dropdown">

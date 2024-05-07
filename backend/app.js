@@ -87,8 +87,13 @@ app.post('/addTask', (req, res) => {
         return;
     }
 
-    const sqlQuery = `INSERT INTO Tasks (task_name, description, deadline, last_change, user)
-                      VALUES ('${taskName}', '${description}', '${deadline}', NOW(), ${userId})`;
+    let sqlQuery = `INSERT INTO Tasks (task_name, description, deadline, last_change, user)
+                        VALUES ('${taskName}', '${description}', '${deadline}', NOW(), ${userId})`;
+
+    if (!deadline) {
+        sqlQuery = `INSERT INTO Tasks (task_name, description, deadline, last_change, user)
+                        VALUES ('${taskName}', '${description}', ${deadline}, NOW(), ${userId})`;
+    }
 
     dbConnection.query(sqlQuery, (err, result) => {
         if (err) {
@@ -99,7 +104,7 @@ app.post('/addTask', (req, res) => {
         console.log('Запись успешно добавлена в таблицу Tasks');
         res.send('Запись успешно добавлена в таблицу Tasks');
     });
-});
+}); 
 
 // Удаление задачи
 app.delete('/deleteTask/:taskId', (req, res) => {
@@ -117,17 +122,21 @@ app.delete('/deleteTask/:taskId', (req, res) => {
     });
 });
 
-// Метод для редактирования задачи
+// Метод для редактирования задачи  
 app.put('/editTask/:taskId', async (req, res) => {
     const taskId = req.params.taskId;
     const { newName, newDescription, newDeadline } = req.body;
 
-    if (!newName && !newDescription && !newDeadline) {
+    if (!newName) {
         return res.status(400).json({ error: 'Не указаны новые данные' });
     }
 
-    const sqlQuery = `UPDATE Tasks SET task_name = '${newName}',
-    description = '${newDescription}', deadline = '${newDeadline}', last_change = NOW() WHERE id = ${taskId}`;
+    let sqlQuery = `UPDATE Tasks SET task_name = '${newName}',
+        description = '${newDescription}', deadline = '${newDeadline}', last_change = NOW() WHERE id = ${taskId}`;
+    if (!newDeadline) {
+        sqlQuery = `UPDATE Tasks SET task_name = '${newName}',
+            description = '${newDescription}', deadline = ${newDeadline}, last_change = NOW() WHERE id = ${taskId}`;
+    }
     dbConnection.query(sqlQuery, (err, result) => {
         if (err) {
             console.error('Ошибка выполнения запроса: ' + err.stack);

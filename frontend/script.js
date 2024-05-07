@@ -1,55 +1,57 @@
-﻿document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
     const taskForm = document.getElementById('taskForm');
+    let sortType = JSON.parse(localStorage.getItem('sortType'));
     let userId = 0;
 
-    if (token) { 
+    if (token) {
         try {
             const response = await fetch('http://localhost:3000/profile', {
                 headers: {
-                    'Authorization': `Bearer ${token}` // Передача токена в заголовке запроса
+                    'Authorization': `Bearer ${token}`
                 }
             });
                 
             if (!response.ok) {
-                throw new Error('Неверный токен'); // Если токен неверный, выбрасываем ошибку
+                throw new Error('Неверный токен');
             }
             
-            const data = await response.json(); // Извлекаем JSON из ответа
-            userId = data.userId; // Получаем email из объекта данных
-            
-            // Пользователь аутентифицирован, показываем форму для добавления задач
+            const data = await response.json();
+            userId = data.userId;
             taskForm.style.display = 'block';
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('registerForm').style.display = 'none';
-            loadTasks(); 
-        // Загружаем задачи с сервера для данного пользователя
+            document.getElementById('editButton').style.display = 'none';
+            loadTasks(sortType); 
         } catch (error) {
             console.error('Ошибка при проверке аутентификации:', error);
             alert('Для просмотра задач необходимо войти в систему');
-            // Перенаправляем пользователя на страницу входа или отображаем сообщение об ошибке
         }
     } else {
-        // Пользователь не аутентифицирован, скрываем форму для добавления задач
         taskForm.style.display = 'none';
-        // Показываем форму входа и/или регистрации
+        document.querySelector('button.dropbtn').style.display = 'none';
+        document.getElementById('buttonsBlock').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('registerForm').style.display = 'block';
     }
 
     // Обработчик события отправки формы
-    document.getElementById('taskForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Предотвращаем перезагрузку страницы
+    document.getElementById('submitButton').addEventListener('click', function (event) {
+        event.preventDefault();
         const taskInput = document.getElementById('taskInput');
         const descriptionInput = document.getElementById('descriptionInput');
         const dateInput = document.getElementById('dateInput').value;
-        const timeInput = document.getElementById('timeInput').value; // Получаем поля описания задачи
+        const timeInput = document.getElementById('timeInput').value;
+        let deadline = null;
+        
+        if (dateInput !== "" && timeInput !== "") {
+            const localDeadline = new Date(dateInput + 'T' + timeInput);
+            localDeadline.setTime(localDeadline.getTime() + 6 * 60 * 60 * 1000);
+            deadline = localDeadline.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+        }
 
         const taskName = taskInput.value.trim();
         const description = descriptionInput.value.trim();
-        const localDeadline = new Date(dateInput + 'T' + timeInput);
-        localDeadline.setTime(localDeadline.getTime() + 6 * 60 * 60 * 1000);
-        const deadline = localDeadline.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
 
         if (taskName !== '') {
             addTask(taskName, description, deadline, userId);
@@ -65,6 +67,7 @@
         item.addEventListener('click', function(event) {
             event.preventDefault();
             const selectedSort = item.textContent;
+            localStorage.setItem('sortType', JSON.stringify(selectedSort));
             switch(selectedSort) {
                 case 'lexicographic':
                     loadTasks('lexicographic');
@@ -136,14 +139,18 @@
                     const taskNameElement = document.createElement('p');
                     taskNameElement.textContent = `Task Name: ${task.task_name}`;
                     taskInfo.appendChild(taskNameElement);
-    
-                    const descriptionElement = document.createElement('p');
-                    descriptionElement.textContent = `Description: ${task.description}`;
-                    taskInfo.appendChild(descriptionElement);
-    
-                    const deadlineElement = document.createElement('p');
-                    deadlineElement.textContent = `Deadline: ${formatDeadline(task.deadline)}`;
-                    taskInfo.appendChild(deadlineElement);
+
+                    if(task.description){
+                        const descriptionElement = document.createElement('p');
+                        descriptionElement.textContent = `Description: ${task.description}`;
+                        taskInfo.appendChild(descriptionElement);
+                    }
+
+                    if(task.deadline){
+                        const deadlineElement = document.createElement('p');
+                        deadlineElement.textContent = `Deadline: ${formatDeadline(task.deadline)}`;
+                        taskInfo.appendChild(deadlineElement);
+                    }
     
                     const trashIcon = document.createElement('span');
                     trashIcon.classList.add('task-delete');
@@ -157,7 +164,7 @@
                     editIcon.classList.add('task-edit');
                     editIcon.textContent = '✎';
                     editIcon.addEventListener('click', () => {
-                        handleEditTask(task, task.id);
+                        handleEditTask(task.id, task.task_name, task.description, task.deadline);
                     });
                     taskInfo.appendChild(editIcon);
     
@@ -190,6 +197,8 @@
     
     // Функция для редактирования задачи
     function editTask(taskId, newName, newDescription, newDeadline) {
+        document.getElementById('submitButton').style.display = 'block';
+        document.getElementById('editButton').style.display = 'none';
         fetch(`http://localhost:3000/editTask/${taskId}`, {
             method: 'PUT',
             headers: {
@@ -215,14 +224,15 @@
     }
 
     // Функция для обработки редактирования задачи
-    function handleEditTask(task, taskId) {
+    function handleEditTask(taskId, task_name, description, deadline) {
+        document.getElementById('submitButton').style.display = 'none';
+        document.getElementById('editButton').style.display = 'block';
         const taskInput = document.getElementById('taskInput');
         const descriptionInput = document.getElementById('descriptionInput');
-        const deadlineInput = document.getElementById('deadlineInput');
 
         // Заполнение полей формы данными текущей задачи
-        taskInput.value = task.task_name;
-        descriptionInput.value = task.description;
+        taskInput.value = task_name;
+        descriptionInput.value = description;
 
         // Обработчик события отправки формы с обновленными данными
         document.getElementById('editButton').addEventListener('click', () => {
@@ -230,9 +240,12 @@
             const newDescription = descriptionInput.value.trim();
             const dateInput = document.getElementById('dateInput').value;
             const timeInput = document.getElementById('timeInput').value;
-            const localDeadline = new Date(dateInput + 'T' + timeInput);
-            localDeadline.setTime(localDeadline.getTime() + 6 * 60 * 60 * 1000);
-            const newDeadline = localDeadline.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+            let newDeadline = null;
+            if (dateInput !== "" && timeInput !== "") {
+                const localDeadline = new Date(dateInput + 'T' + timeInput);
+                localDeadline.setTime(localDeadline.getTime() + 6 * 60 * 60 * 1000);
+                newDeadline = localDeadline.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+            }
             if (newTaskName !== '') {
                 editTask(taskId, newTaskName, newDescription, newDeadline);
                 // Очистка полей формы после редактирования
