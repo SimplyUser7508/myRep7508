@@ -34,7 +34,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
         }
       }),
         ConfigModule.forRoot({
-            envFilePath: './config/env'
+            envFilePath: './env'
         }),
         TypeOrmModule.forRoot({
           type: 'mysql',
