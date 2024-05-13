@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (token && token !== 'undefined') {
         try {
-            const response = await fetch('https://to-do-listok.onrender.com/auth/profile', {
+            const response = await fetch('http://localhost:10000/auth/profile', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Для просмотра задач необходимо войти в систему');
         }
     } else {
-        const response = await fetch('https://to-do-listok.onrender.com', {
+        const response = await fetch('http://localhost:10000', {
         });
                 
         // if (!response.ok) {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         try {
-            const response = await fetch('https://to-do-listok.onrender.com/auth/login', {
+            const response = await fetch('http://localhost:10000/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const yourEmail = document.getElementById('yourEmail').value;
         const newPassword = document.getElementById('newPassword').value;
         try {
-            const response = await fetch('https://to-do-listok.onrender.com/auth/registration', {
+            const response = await fetch('http://localhost:10000/auth/registration', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function loadFolders(userId) {
         document.getElementById('taskList').style.display = 'none';
         document.getElementById('myFolders').style.display = 'none';
-        fetch(`https://to-do-listok.onrender.com/folders/${userId}`, {
+        fetch(`http://localhost:10000/folders/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('folderList').style.display = 'none';
         document.getElementById('myFolders').style.display = 'block';
         document.querySelector('button.dropbtn').style.display = 'block';
-        fetch(`https://to-do-listok.onrender.com/tasks/${folderId}/${sortType}`)
+        fetch(`http://localhost:10000/tasks/${folderId}/${sortType}`)
             .then(response => response.json())
             .then(tasks => {
                 const taskList = document.getElementById('taskList');
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Функция для удаления задачи
     function deleteTask(taskId) {
-        fetch(`https://to-do-listok.onrender.com/tasks/${taskId}`, {
+        fetch(`http://localhost:10000/tasks/${taskId}`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
      // Функция для удаления задачи
      function deleteFolder(folderId) {
-        fetch(`https://to-do-listok.onrender.com/folders/${folderId}`, {
+        fetch(`http://localhost:10000/folders/${folderId}`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function editTask(taskId, newName, newDescription, newDeadline) {
         document.getElementById('submitButton').style.display = 'block';
         document.getElementById('editButton').style.display = 'none';
-        fetch(`https://to-do-listok.onrender.com/tasks/${taskId}`, {
+        fetch(`http://localhost:10000/tasks/${taskId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function editFolder(folderId, newName) {
         document.getElementById('submitButton').style.display = 'block';
         document.getElementById('editButton').style.display = 'none';
-        fetch(`https://to-do-listok.onrender.com/folders/${folderId}`, {
+        fetch(`http://localhost:10000/folders/${folderId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Функция для добавления задачи на сервер
     function addTask(taskName, description, deadline) {
     //'2024-04-07 12:00:00'; // Пример временного значения для демонстрации
-    fetch(`https://to-do-listok.onrender.com/tasks/${currentFolder}`, {
+    fetch(`http://localhost:10000/tasks/${currentFolder}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Функция для добавления задачи на сервер
     function addFolder(userId, folderName) {
         //'2024-04-07 12:00:00'; // Пример временного значения для демонстрации
-        fetch(`https://to-do-listok.onrender.com/folders/${userId}`, {
+        fetch(`http://localhost:10000/folders/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
