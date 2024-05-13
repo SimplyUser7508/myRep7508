@@ -23,7 +23,7 @@ export class MailService {
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: 'Активируйте аккаунт на ' + process.env.API_URL,
+      subject: 'Активируйте аккаунт на to-do-listok.onrender.com',
       text: '',
       html: `
         <div>
