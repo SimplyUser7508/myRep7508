@@ -35,7 +35,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            margin-top: 5px;
         }
         .task-delete {
             cursor: pointer;
@@ -44,12 +44,37 @@
             cursor: pointer;
         }
 
+        #fodlerList {
+            max-width: 650px;
+            margin-top: 10px;
+            overflow-wrap: break-word;
+        }
+        .folder {
+            font-family: 'Comfortaa', sans-serif;
+            border: none; 
+            background-color: #484848;
+            color: #d7d7d7;
+            display: flex;
+            padding: 10px; 
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .folder-delete {
+            cursor: pointer;
+        }
+        .folder-edit {
+            cursor: pointer;
+        }
+
         input[type="text"],
         input[type="password"],
         input[type="date"],
         input[type="time"],
         #loginForm [type = submit],
-        #registerForm [type = submit] {
+        #registerForm [type = submit],
+        #folder button[type="submit"] {
             font-family: 'Comfortaa', sans-serif;
             background-color: #484848;
             color: #d7d7d7;
@@ -76,13 +101,27 @@
             cursor: pointer;
         }
 
+        .buttons-container {
+            display: flex;
+            align-items: center;
+        }
         .dropdown {
             position: relative;
             display: inline-block;
-            background-color: #484848; /* Цвет фона */
+            background-color: #484848;
             border-radius: 5px;
+            margin-right: 10px;
         }
         .dropdown button {
+            font-family: 'Comfortaa', sans-serif;
+            background-color: #484848;
+            color: #e0e0e0;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .myFolder-button button {
             font-family: 'Comfortaa', sans-serif;
             background-color: #484848;
             color: #e0e0e0;
@@ -111,6 +150,7 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
+
     </style>
 </head>
 <body>
@@ -128,16 +168,30 @@
     <input type="time" id="timeInput" required>
 </form>
 
-<div class="dropdown">
-    <button class="dropbtn">Sort by</button>
-    <div class="dropdown-content">
-      <a href="#">default</a>
-      <a href="#">lexicographic</a>
-      <a href="#">deadline</a>
+<form id="folderForm">
+    <input type="text" id="folderInput" placeholder="Add a new folder">
+</form>
+
+<div class="buttons-container">
+    <div class="dropdown">
+        <button class="dropbtn" id="dropbtn">Sort by</button>
+        <div class="dropdown-content">
+            <a href="#">default</a>
+            <a href="#">lexicographic</a>
+            <a href="#">deadline</a>
+        </div>
+    </div>
+
+    <div class="myFolder-button">
+        <button type="submit" id="myFolders">My folders</button>
     </div>
 </div>
 
 <ul id="taskList">
+    <!-- Сюда будут добавляться задачи -->
+</ul>
+
+<ul id="folderList">
     <!-- Сюда будут добавляться задачи -->
 </ul>
 
