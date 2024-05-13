@@ -13,20 +13,20 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 
 @Controller('auth')
 export class AuthController {
-
     constructor(private authService: AuthService) {}
 
+    @Public()
     @Post('/login')
     login(@Body() userDto: CreateUserDto) {
         return this.authService.login(userDto)
     }
 
+    @Public()
     @Post('/registration')
     registration(@Body() userDto: CreateUserDto) {
         return this.authService.registration(userDto)
     }
 
-    @Public()
     @Get('/profile')
     async getProfile(@Headers('Authorization') authHeader: string) {
         const token = authHeader.split(' ')[1]; 
