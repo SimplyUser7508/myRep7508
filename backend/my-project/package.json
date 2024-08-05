@@ -36,6 +36,7 @@
     "handlebars": "^4.7.8",
     "mysql2": "^3.9.7",
     "nodemailer": "^6.9.13",
+    "pg": "^8.12.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sequelize": "^6.37.3",
