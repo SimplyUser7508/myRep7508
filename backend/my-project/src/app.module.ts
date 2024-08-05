@@ -37,7 +37,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
             envFilePath: './env'
         }),
         TypeOrmModule.forRoot({
-          type: 'mysql',
+          type: 'postgres',
           host: process.env.HOST,
           port: Number(process.env.DB_PORT),
           username: process.env.USER,
